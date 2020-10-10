@@ -1,4 +1,4 @@
-# azan_kz
+# azan_ru
 
 A new Flutter project.
 
