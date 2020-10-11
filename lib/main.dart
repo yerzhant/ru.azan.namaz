@@ -9,7 +9,7 @@ void main() => runApp(NamazApp());
 class NamazApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Color(0xF01BA2DD));
+    FlutterStatusbarcolor.setStatusBarColor(Color(0xFF183056));
     return MaterialApp(
       title: 'Намаз',
       home: _HomePage(),
