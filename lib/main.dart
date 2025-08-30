@@ -1,7 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() => runApp(NamazApp());
@@ -23,7 +21,9 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> with WidgetsBindingObserver {
-  final _controller = Completer<WebViewController>();
+  final _controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(Uri.https('azan.ru', 'namaz'));
 
   @override
   void initState() {
@@ -40,8 +40,7 @@ class _HomePageState extends State<_HomePage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
-      var c = await _controller.future;
-      c.evaluateJavascript('player.pauseVideo()');
+      await _controller.runJavaScript('player.pauseVideo()');
     }
   }
 
@@ -49,18 +48,11 @@ class _HomePageState extends State<_HomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: SafeArea(
-        child: WebView(
-          initialUrl: 'https://azan.ru/namaz',
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController controller) {
-            _controller.complete(controller);
-          },
-        ),
+        child: WebViewWidget(controller: _controller),
       ),
       onWillPop: () async {
-        var c = await _controller.future;
-        if (await c.canGoBack()) {
-          await c.goBack();
+        if (await _controller.canGoBack()) {
+          await _controller.goBack();
           return false;
         }
         return true;
